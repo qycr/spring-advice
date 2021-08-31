@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns="http://www.qycr.framework/schema/advice"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.qycr.framework/schema/advice"
+            elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xsd:documentation><![CDATA[
+	          Define the elements used in the Spring Framework's
+	                declarative interception proxy management infrastructure.
+		]]></xsd:documentation>
+    </xsd:annotation>
+
+<xsd:element name="advice-driven">
+    <xsd:annotation>
+        <xsd:documentation><![CDATA[
+	             Process components with Advice annotations.
+			]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+
+        <xsd:sequence>
+            <xsd:element name="advice-filter" type="AdviceType"
+                         minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+                     Type of filtration notification, expression and other variable values
+							]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="annotation-types" type="xsd:string" default="com.qycr.framework.aop.support.annotation.Advice">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	               Default in internal call need to intercept the annotations,
+	                      support custom annotations is complete full name of the class,
+	                                       multiple custom annotations have semicolons to separate.
+					]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="advice-processor" type="xsd:string" default="com.qycr.framework.aop.support.replacer.processor.SimpleAdviceReplacerProcessor">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	               Advice default processor, used to process method execution before and after connection processing
+					]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="enableSingleton" type="xsd:boolean" default="false">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                     Callback interface triggered at the end of the singleton pre-instantiation phase
+                      during {@link BeanFactory} bootstrap. This interface can be implemented by
+                      singleton beans in order to perform some initialization after the regular
+                      singleton instantiation algorithm, avoiding side effects with accidental early
+                      initialization (e.g. from {@link ListableBeanFactory#getBeansOfType} calls).
+                      In that sense, it is an alternative to {@link InitializingBean} which gets
+                      triggered right at the end of a bean's local construction phase.
+					]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+
+    </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="AdviceType">
+        <xsd:attribute name="type"  default="annotation">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    Notification type variable values for the enumeration type
+                ]]></xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="annotation"/>
+                    <xsd:enumeration value="regex"/>
+                    <xsd:enumeration value="aspectj"/>
+                    <xsd:enumeration value="consumer"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="expression" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                  When the type is regular or Aspectj or consumer, the expression content of regular or Aspectj
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="pointcutBeanName" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                    In the name of the bean custom entry point.
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="adviceBeanName" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+                     custom  aAdvice's bean name
+                ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+</xsd:schema>
