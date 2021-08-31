@@ -72,7 +72,12 @@ public class AdviceService implements AdviceAware {
 
 
 <h3>Way four :</h3>
+@Configuration
+@EnableAdvice(advice = @EnableAdvice.AdviceFilter(type = AdviceType.ASPECTJ,expression = {"execution(* com.qycr.AdviceService.*(..)) "}))
+public class ConfigClass {
 
+
+}
 
 @Service
 public class AdviceService {
