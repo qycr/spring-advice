@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.qycr</groupId>
-    <artifactId>spring-proxy-support</artifactId>
+    <artifactId>spring-advice</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>
         Spring runtime dynamic proxy woven into the
