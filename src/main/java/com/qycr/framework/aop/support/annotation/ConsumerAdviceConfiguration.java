@@ -17,7 +17,7 @@ public class ConsumerAdviceConfiguration extends AbstractAdviceConfiguration {
         List<Pointcut> result = new ArrayList<>();
         for (Class<? extends Pointcut> pointcut : pointcuts) {
             final AdvicePointcut instantiateClass = (AdvicePointcut) BeanUtils.instantiateClass(pointcut);
-            instantiateClass.setExpression(expression);
+            instantiateClass.setExpression(expression());
             result.add(instantiateClass);
         }
         final String[] advicePointcuts = this.adviceFilter.getStringArray("pointcutBeanName");
@@ -29,7 +29,7 @@ public class ConsumerAdviceConfiguration extends AbstractAdviceConfiguration {
     protected Supplier<Advice> advice() {
         final String adviceBeanName = this.adviceFilter.getString("adviceBeanName");
         if (StringUtils.hasText(adviceBeanName)) {
-            Advice advice = this.beanFactory.getBean(adviceBeanName, Advice.class);
+            Advice advice = this.beanFactory.getBean(environment.resolvePlaceholders(adviceBeanName), Advice.class);
             return () -> advice;
         }
         return super.advice();

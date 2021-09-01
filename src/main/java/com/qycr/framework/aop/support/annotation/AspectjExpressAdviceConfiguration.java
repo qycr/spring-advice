@@ -15,7 +15,7 @@ public class AspectjExpressAdviceConfiguration extends AbstractAdviceConfigurati
             throw new AdviceExpressionException("expression must not be empty");
         }
         final AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression(this.expression[0]);
+        pointcut.setExpression(environment.resolvePlaceholders(this.expression[0]));
         return  Stream.of(pointcut).toArray(Pointcut[]::new);
     }
 }

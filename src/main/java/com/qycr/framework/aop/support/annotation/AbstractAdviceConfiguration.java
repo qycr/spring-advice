@@ -11,18 +11,20 @@ import org.springframework.aop.Pointcut;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-public  abstract class AbstractAdviceConfiguration implements ImportAware , BeanFactoryAware {
+public  abstract class AbstractAdviceConfiguration implements ImportAware , BeanFactoryAware , EnvironmentAware {
 
     public static final String METHOD_INVOKER_ADVICE="internalMethodInvokerAdviceExecutionPostProcessor";
 
@@ -33,6 +35,8 @@ public  abstract class AbstractAdviceConfiguration implements ImportAware , Bean
     protected String[] expression;
 
     protected BeanFactory beanFactory;
+
+    protected Environment environment;
 
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
@@ -95,6 +99,13 @@ public  abstract class AbstractAdviceConfiguration implements ImportAware , Bean
         return new SimpleAdviceReplacerProcessor();
     }
 
+    public String[] expression(){
+        String[] originalExpression=this.expression;
+        for(int i = 0; i < originalExpression.length; i ++){
+            originalExpression[i] = this.environment.resolvePlaceholders(originalExpression[i]);
+        }
+        return originalExpression;
+    }
     protected abstract Pointcut[] pointcut();
 
 
@@ -109,6 +120,11 @@ public  abstract class AbstractAdviceConfiguration implements ImportAware , Bean
         }
 
         public static final Advice INSTANCE=new Advice(){};
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     @Override
