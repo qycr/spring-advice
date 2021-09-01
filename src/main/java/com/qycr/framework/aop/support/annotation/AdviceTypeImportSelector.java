@@ -36,7 +36,7 @@ public abstract class AdviceTypeImportSelector<A extends Annotation>  implements
         final AnnotationAttributes advice = attributes.getAnnotation("advice");
         AdviceType adviceType = advice.getEnum(getAdviceTypeAttributeName());
         String[] imports = selectImports(adviceType);
-        if (imports == null) {
+        if (imports == null || imports .length == 0) {
             throw new IllegalArgumentException(String.format("Unknown AdviceType: %s",adviceType));
         }
         return imports;
