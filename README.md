@@ -9,7 +9,37 @@
    Spring runs dynamic agent to woven, internal method calls no advice, the official website gives a switch to Aspect, 
    (Enable Load Time Weaving). Or open expose proxy = true) Current proxy class (local thread storage defects invoking in sublines)
  </h3>
-  Dynamic agent processing method :
+ <h3>
+   
+   
+@Component
+public class AsyncService implements AsyncIService  {
+
+    @Override
+    public void advice() {
+        //TODO...
+        //  when exposing the proxy class, it is used in the child thread=>Cannot find current proxy:
+        //  Set 'exposeProxy' property on Advised to 'true' to make it available,and ensure that AopContext.currentProxy()
+        //  is invoked in the same thread as the AOP invocation context.
+        new Thread(()-> ((AsyncService)AopContext.currentProxy()).adviceExecute(),"local-advice-name").start();
+
+    }
+
+    @Transactional
+    @Override
+    public void adviceExecute() {
+        //TODO...
+
+    }
+
+}
+   </h3>
+ 
+ 
+ 
+ 
+ 
+ Dynamic agent processing method :
 
 <h3>Way one:</h3>
 
