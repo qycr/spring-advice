@@ -74,6 +74,7 @@ public class AdviceService implements AdviceAware {
 <h3>Way four :</h3>
 @Configuration
 @EnableAdvice(advice = @EnableAdvice.AdviceFilter(type = AdviceType.ASPECTJ,expression = {"execution(* com.qycr.AdviceService.*(..)) "}))
+//@EnableAdvice(advice = @EnableAdvice.AdviceFilter(type = AdviceType.ASPECTJ,expression = {"execution(* com.qycr.AdviceService.*(..) ) && @annotation(org.springframework.transaction.annotation.Transactional)"}))  //Fine-grained
 public class ConfigClass {
 
 
