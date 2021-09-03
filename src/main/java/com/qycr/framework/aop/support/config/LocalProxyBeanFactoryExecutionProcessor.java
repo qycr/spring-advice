@@ -12,8 +12,7 @@ public class LocalProxyBeanFactoryExecutionProcessor implements BeanFactoryPostP
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         if(beanFactory instanceof AbstractAutowireCapableBeanFactory){
-            AbstractAutowireCapableBeanFactory abstractAutowireCapableBeanFactory=(AbstractAutowireCapableBeanFactory) beanFactory;
-            abstractAutowireCapableBeanFactory.setInstantiationStrategy(new LocalCglibSubclassingInstantiationStrategy());
+            ( (AbstractAutowireCapableBeanFactory) beanFactory).setInstantiationStrategy(new LocalCglibSubclassingInstantiationStrategy());
         }
     }
 }

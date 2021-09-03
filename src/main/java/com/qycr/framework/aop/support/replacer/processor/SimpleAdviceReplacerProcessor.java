@@ -54,11 +54,11 @@ public class SimpleAdviceReplacerProcessor implements AdviceReplacerProcessor, B
         if (Objects.isNull(bean)) {
             String shortClassName = ClassUtils.getShortName(type.getName());
             bean = beanFactory.getBean(Introspector.decapitalize(shortClassName));
-            addBean(lookMethodCache, bean);
+            registerBean(lookMethodCache, bean);
         }
         if (bean instanceof String) {
             bean = beanFactory.getBean((String) bean);
-            addBean(lookMethodCache, bean);
+            registerBean(lookMethodCache, bean);
         }
         if (AopUtils.isJdkDynamicProxy(bean)) {
             //Can be tiny cached
@@ -102,12 +102,12 @@ public class SimpleAdviceReplacerProcessor implements AdviceReplacerProcessor, B
         return mp.invokeSuper(obj, args);
     }
 
-    private synchronized void addBean(LookMethodCache lookMethodCache, Object bean) {
+    private synchronized void registerBean(LookMethodCache lookMethodCache, Object bean) {
         this.proxyBean.put(lookMethodCache, bean);
     }
 
-    public void addBean(String methodName, Class<?> beanType, Class<?>[] parameterType, Object bean) {
-        addBean(new LookMethodCache(methodName, beanType, parameterType), bean);
+    public void registerBean(String methodName, Class<?> beanType, Class<?>[] parameterType, Object bean) {
+        registerBean(new LookMethodCache(methodName, beanType, parameterType), bean);
     }
 
 

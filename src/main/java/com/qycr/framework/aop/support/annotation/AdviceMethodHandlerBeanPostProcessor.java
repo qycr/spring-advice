@@ -17,8 +17,6 @@ import org.springframework.beans.factory.support.MethodOverrides;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -58,31 +56,21 @@ public class AdviceMethodHandlerBeanPostProcessor  extends AbstractAdviceMethodP
     }
 
     private void processAdviceMethod(Set<AdviceOverride> adviceOverrides, Class<?> beanClass, String beanName) {
-
-       /*final Advice mergedAnnotation = AnnotatedElementUtils.findMergedAnnotation(beanClass, Advice.class);
-        if (Objects.nonNull(mergedAnnotation)) {
-
-            ReflectionUtils.doWithMethods(beanClass,method -> {
-                addAdviceOverride(adviceOverrides, method.getName(), method.getParameterTypes());
-                addLocalMethod(beanClass, beanName, method.getParameterTypes(), method.getName());
-            });
-
-        }*/
         ReflectionUtils.doWithMethods(beanClass, method -> {
-            addAdviceOverride(adviceOverrides, method.getName(), method.getParameterTypes());
-            addLocalMethod(beanClass, beanName, method.getParameterTypes(), method.getName());
+            registerAdviceOverride(adviceOverrides, method.getName(), method.getParameterTypes());
+            registerLocalMethod(beanClass, beanName, method.getParameterTypes(), method.getName());
         }, method -> matches(beanClass, method));
 
     }
 
 
-    private void addAdviceOverride(Set<AdviceOverride> replaceOverrides, String methodName, Class[] parameterTypes) {
+    private void registerAdviceOverride(Set<AdviceOverride> replaceOverrides, String methodName, Class[] parameterTypes) {
         final AdviceOverride adviceOverride = new AdviceOverride(methodName, AdviceMethodExecutionReplacer.COMMON_ADVICE_REPLACER, true);
         Stream.of(parameterTypes).filter(Objects::nonNull).forEach(type -> adviceOverride.addTypeIdentifier(type.getName()));
         replaceOverrides.add(adviceOverride);
     }
 
-    private void addLocalMethod(Class<?> beanClass, String beanName, Class[] parameterType, String methodName) {
+    private void registerLocalMethod(Class<?> beanClass, String beanName, Class[] parameterType, String methodName) {
         final LocalMethod localMethod = new LocalMethod(beanClass, beanName, parameterType, methodName);
         replaceMethods.add(localMethod);
     }
@@ -94,7 +82,7 @@ public class AdviceMethodHandlerBeanPostProcessor  extends AbstractAdviceMethodP
         adviceReplacerProcessors.stream().forEach(adviceReplacerProcessor -> {
             if (adviceReplacerProcessor instanceof SimpleAdviceReplacerProcessor) {
                 SimpleAdviceReplacerProcessor simpleAdviceReplacerProcessor = (SimpleAdviceReplacerProcessor) adviceReplacerProcessor;
-                this.replaceMethods.stream().filter(Objects::nonNull).forEach(localMethod -> simpleAdviceReplacerProcessor.addBean(localMethod.methodName, localMethod.beanType, localMethod.parameterType, localMethod.beanName));
+                this.replaceMethods.stream().filter(Objects::nonNull).forEach(localMethod -> simpleAdviceReplacerProcessor.registerBean(localMethod.methodName, localMethod.beanType, localMethod.parameterType, localMethod.beanName));
             }
         });
         this.replaceMethods.clear();
@@ -177,7 +165,7 @@ public class AdviceMethodHandlerBeanPostProcessor  extends AbstractAdviceMethodP
 
     @Override
     public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-
+     //NOOP...
     }
 
     public boolean matches(Class<?> clazz, Method method) {
